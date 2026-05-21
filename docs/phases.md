@@ -2,6 +2,8 @@
 
 Track progress here. Each phase must pass before enabling the next in a combined build.
 
+**Workflow:** Before `west flash`, monitor, or any step needing physical hardware, **confirm with the user** that the board (and SD card / antenna when relevant) is connected. See [LESSONS_LEARNED.md](../LESSONS_LEARNED.md).
+
 Status key: `[ ]` not started · `[~]` in progress · `[x]` done
 
 ---
@@ -10,20 +12,20 @@ Status key: `[ ]` not started · `[~]` in progress · `[x]` done
 
 **Goal:** Flash and monitor on Windows using a **separate ESP32 workspace** (not `C:\ncs\`).
 
-- [ ] Confirm NCS at `C:\ncs\` stays for Nordic only (no changes needed there)
-- [ ] Create `C:\zephyrproject\` upstream West workspace (`west init`, `west update`)
-- [ ] Install Zephyr SDK with **xtensa-espressif_esp32s3** (ARM toolchains in `C:\ncs\` are not sufficient)
-- [ ] Set `ZEPHYR_SDK_INSTALL_DIR` and activate ESP32 Zephyr environment (new shell, not NCS shell)
-- [ ] `west blobs fetch hal_espressif`
-- [ ] Clone this repo to `C:\zephyrproject\applications\xiao_esp32s3_sense_zephyr`
-- [ ] Build `samples/hello_world` for `xiao_esp32s3/xiao_esp32s3_procpu/sense`
-- [ ] `west flash` + `west espressif monitor`
+- [x] Confirm NCS at `C:\ncs\` stays for Nordic only (no changes needed there)
+- [x] Create `C:\zephyrproject\` upstream West workspace (`west init --mr v4.1.0`, `west update`)
+- [x] Install Zephyr SDK with **xtensa-espressif_esp32s3** (`C:\Users\Brian\zephyr-sdk-0.17.2`)
+- [x] Set `ZEPHYR_SDK_INSTALL_DIR` in ESP32 build shell (not NCS shell)
+- [x] `west blobs fetch hal_espressif`
+- [x] Clone this repo to `C:\zephyrproject\applications\xiao_esp32s3_sense_zephyr`
+- [x] Build `samples/hello_world` for `xiao_esp32s3/esp32s3/procpu/sense` (with Picolibc module conf)
+- [ ] `west flash` + `west espressif monitor` — **pending hardware confirmation**
 
 **Pass:** `Hello World! xiao_esp32s3` on serial.
 
 **Notes:**
 
-See [LESSONS_LEARNED.md](../LESSONS_LEARNED.md) for resolved Phase 0 blockers (Zephyr version pin, board qualifier, Picolibc conf, env vars). Flash/monitor on hardware still pending confirmation.
+Build succeeded (`zephyr.elf` at `C:\zephyrproject\zephyr\build\zephyr\zephyr.elf`). Flash not yet confirmed: first attempt failed (esptool path); monitor saw COM4/COM5 but no Hello World. Retry with board connected — see [docs/phase0-setup.md](phase0-setup.md) and [LESSONS_LEARNED.md](../LESSONS_LEARNED.md).
 
 ---
 

@@ -5,6 +5,19 @@ Update this file whenever a new blocker is resolved so future setup and later ph
 
 **Related docs:** [docs/phases.md](docs/phases.md) · [ZEPHYR_PLAN.md](ZEPHYR_PLAN.md)
 
+## Agent / workflow rule: confirm hardware before physical steps
+
+**Before running `west flash`, `west espressif monitor`, or any step that needs the board, SD card, or antenna connected — ask the user to confirm hardware is hooked up.** Do not assume the XIAO is on USB, the Sense expansion is seated, or the SD card is inserted.
+
+Typical checklist to confirm with the user:
+
+- XIAO ESP32S3 Sense connected via **USB-C** (data port, not charge-only cable)
+- Sense expansion board **seated** on the B2B connector (click)
+- **microSD** inserted (Phases 1+)
+- **Wi-Fi antenna** installed (Phases 4+)
+
+Build-only steps (`west build`, `west update`, doc edits) do not require this confirmation.
+
 ---
 
 ## Planning / Environment (pre-Phase 0)
@@ -100,14 +113,32 @@ Update this file whenever a new blocker is resolved so future setup and later ph
 | **Fix** | Wait for completion; run once per workspace. Subsequent updates are incremental. |
 | **Notes** | Plan for network bandwidth and disk space (~several GB) on first setup. |
 
-### 7. Flash and serial monitor (open)
+### 7. Flash attempted without confirming board was connected
+
+| Field | Detail |
+|---|---|
+| **Issue** | Agent ran `west flash` / monitor without asking whether the XIAO was plugged in. |
+| **Symptom** | Flash or monitor steps fail or produce ambiguous results (wrong COM port, no serial output) when hardware is absent or not ready. |
+| **Fix** | **Ask the user first** whether the board is connected and ready. Only then run flash/monitor. |
+| **Notes** | Documented as a standing workflow rule at the top of this file. |
+
+### 8. Flash and serial monitor (hardware pending)
 
 | Field | Detail |
 |---|---|
 | **Issue** | End-to-end flash + monitor not yet confirmed on physical hardware. |
-| **Symptom** | — |
-| **Fix** | Pending user board connection: `west flash` then `west espressif monitor`. Hold BOOT + tap RESET if flash fails. |
-| **Notes** | **Pass criterion:** serial prints `Hello World! xiao_esp32s3`. Update Phase 0 checklist in [docs/phases.md](docs/phases.md) when confirmed. |
+| **Symptom** | First `west flash` failed: `esptool.py not found` under HAL path (may be timing/path before blobs fully present). Monitor opened COM4/COM5 but no `Hello World` without successful flash. |
+| **Fix** | Confirm board is connected, then verify `C:\zephyrproject\modules\hal\espressif\tools\esptool_py\esptool.py` exists after `west blobs fetch hal_espressif`. Retry `west flash`; hold BOOT + tap RESET if needed. Use `west espressif monitor` on the XIAO USB-C port. |
+| **Notes** | **Pass criterion:** serial prints `Hello World! xiao_esp32s3`. See [docs/phase0-setup.md](docs/phase0-setup.md). |
+
+### 9. esptool.py missing at flash time
+
+| Field | Detail |
+|---|---|
+| **Issue** | `west flash` requires `esptool.py` from the Espressif HAL module. |
+| **Symptom** | `FATAL ERROR: required program .../esptool_py/esptool.py not found` |
+| **Fix** | Run `west blobs fetch hal_espressif` from `C:\zephyrproject`. If still missing, `pip install esptool`. |
+| **Notes** | File should exist at `modules/hal/espressif/tools/esptool_py/esptool.py` after blobs fetch. |
 
 ### Phase 0 working build recipe (reference)
 
