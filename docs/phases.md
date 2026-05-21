@@ -8,10 +8,14 @@ Status key: `[ ]` not started · `[~]` in progress · `[x]` done
 
 ## Phase 0 — Toolchain and Blank Board
 
-**Goal:** Flash and monitor on Windows.
+**Goal:** Flash and monitor on Windows using a **separate ESP32 workspace** (not `C:\ncs\`).
 
-- [ ] Install Zephyr SDK + west
+- [ ] Confirm NCS at `C:\ncs\` stays for Nordic only (no changes needed there)
+- [ ] Create `C:\zephyrproject\` upstream West workspace (`west init`, `west update`)
+- [ ] Install Zephyr SDK with **xtensa-espressif_esp32s3** (ARM toolchains in `C:\ncs\` are not sufficient)
+- [ ] Set `ZEPHYR_SDK_INSTALL_DIR` and activate ESP32 Zephyr environment (new shell, not NCS shell)
 - [ ] `west blobs fetch hal_espressif`
+- [ ] Clone this repo to `C:\zephyrproject\applications\xiao_esp32s3_sense_zephyr`
 - [ ] Build `samples/hello_world` for `xiao_esp32s3/xiao_esp32s3_procpu/sense`
 - [ ] `west flash` + `west espressif monitor`
 

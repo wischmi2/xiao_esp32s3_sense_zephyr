@@ -13,12 +13,30 @@ This document is the living design plan. Application code follows phased bring-u
 
 ---
 
+## Development Environment (NCS + Separate ESP32 Workspace)
+
+You already use **nRF Connect SDK (NCS)** with toolchains under `C:\ncs\`. That **is** a West workspace — but it is built for **Nordic (ARM) targets**, not Espressif ESP32-S3.
+
+| | NCS workspace (`C:\ncs\`) | ESP32 workspace (`C:\zephyrproject\`) |
+|---|---|---|
+| Purpose | Nordic nRF boards | XIAO ESP32S3 Sense |
+| Zephyr source | NCS-pinned fork | Upstream Zephyr |
+| Toolchain | ARM GCC (in `C:\ncs\`) | **Zephyr SDK** with **Xtensa** (ESP32-S3) |
+| HAL blobs | Nordic-focused | `west blobs fetch hal_espressif` required |
+| Keep using for | Existing Nordic projects | This project only |
+
+**Decision:** Keep `C:\ncs\` unchanged. Create a **separate** upstream Zephyr workspace at `C:\zephyrproject\` for the XIAO.
+
+What carries over from NCS experience: `west build`, `prj.conf`, devicetree overlays, Kconfig, and the general Zephyr application model. What is new: Xtensa toolchain via Zephyr SDK, Espressif HAL blobs, and `west espressif monitor` instead of `west flash` via J-Link.
+
+---
+
 ## Project Layout
 
-West workspace pattern — this repo is an external application checked out beside upstream Zephyr:
+West workspace pattern — this repo is an external application checked out beside **upstream** Zephyr (not inside NCS):
 
 ```text
-~/zephyrproject/
+C:\zephyrproject\
 ├── zephyr/                          # upstream Zephyr (west manifest)
 ├── modules/                         # HAL blobs, etc.
 └── applications/

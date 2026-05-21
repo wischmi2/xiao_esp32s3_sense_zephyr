@@ -15,27 +15,33 @@ Design plan: [ZEPHYR_PLAN.md](ZEPHYR_PLAN.md)
 
 ## West Workspace Setup
 
-This repo is intended as an external application inside a standard Zephyr west workspace:
+### Already using NCS at `C:\ncs\`?
 
-```bash
-# One-time: create workspace (adjust paths as needed)
-mkdir -p ~/zephyrproject/applications
-cd ~/zephyrproject
+Yes — NCS is a West workspace, but it targets **Nordic ARM** chips. The XIAO ESP32S3 needs **upstream Zephyr + Xtensa toolchain + Espressif HAL**, so use a **separate** workspace. Keep `C:\ncs\` for Nordic work; do not mix ESP32 builds into the NCS tree.
+
+### One-time: create the ESP32 workspace (Windows)
+
+```powershell
+# Create workspace (separate from C:\ncs\)
+mkdir C:\zephyrproject\applications -Force
+cd C:\zephyrproject
 west init -m https://github.com/zephyrproject-rtos/zephyr --mr main
 west update
 west blobs fetch hal_espressif
 
-# Add this application
+# Clone this application
 cd applications
 git clone https://github.com/wischmi2/xiao_esp32s3_sense_zephyr.git
 ```
 
+You also need the [Zephyr SDK](https://github.com/zephyrproject-rtos/sdk-ng/releases) with **xtensa-espressif_esp32s3** support. The ARM toolchains under `C:\ncs\` cannot compile ESP32-S3 firmware. Follow the [Windows getting started guide](https://docs.zephyrproject.org/latest/develop/getting_started/installation_win.html) for SDK install and `ZEPHYR_SDK_INSTALL_DIR`.
+
 ### Phase 0 smoke test (upstream sample)
 
-Before building this app, confirm the toolchain and board:
+Before building this app, confirm the ESP32 workspace and board:
 
-```bash
-cd ~/zephyrproject/zephyr
+```powershell
+cd C:\zephyrproject\zephyr
 west build -p always -b xiao_esp32s3/xiao_esp32s3_procpu/sense samples/hello_world
 west flash
 west espressif monitor
@@ -45,8 +51,8 @@ Expected: `Hello World! xiao_esp32s3`
 
 ### Windows notes
 
-- Install the [Zephyr SDK](https://github.com/zephyrproject-rtos/sdk-ng/releases) and follow the [Windows getting started guide](https://docs.zephyrproject.org/latest/develop/getting_started/installation_win.html).
-- Use `west espressif monitor` for serial console.
+- Open a **new** terminal/shell for ESP32 work (`C:\zephyrproject\`), not the nRF Connect / NCS environment.
+- Use `west espressif monitor` for serial console (USB-C on the XIAO).
 - Put the board in bootloader mode (hold BOOT, tap RESET) if `west flash` fails.
 
 ## Repository Layout
