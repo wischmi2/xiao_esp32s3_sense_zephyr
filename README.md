@@ -5,7 +5,8 @@ Zephyr RTOS application for the [Seeed Studio XIAO ESP32S3 Sense](https://wiki.s
 **Near-term goal:** Wi-Fi camera streaming (MJPEG).  
 **Long-term goal:** Scheduled capture and OCR for part serial numbers.
 
-Design plan: [ZEPHYR_PLAN.md](ZEPHYR_PLAN.md)
+Design plan: [ZEPHYR_PLAN.md](ZEPHYR_PLAN.md)  
+Setup gotchas and resolved issues: [LESSONS_LEARNED.md](LESSONS_LEARNED.md)
 
 ## Hardware
 
@@ -59,6 +60,7 @@ Expected: `Hello World! xiao_esp32s3`
 
 ```text
 ZEPHYR_PLAN.md          # Architecture and phased plan
+LESSONS_LEARNED.md      # Phase-organized setup issues and fixes
 docs/
   hardware.md           # Physical setup (OCR lighting, mounting)
   phases.md             # Phase checklists and progress tracking

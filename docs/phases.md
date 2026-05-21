@@ -23,6 +23,8 @@ Status key: `[ ]` not started · `[~]` in progress · `[x]` done
 
 **Notes:**
 
+See [LESSONS_LEARNED.md](../LESSONS_LEARNED.md) for resolved Phase 0 blockers (Zephyr version pin, board qualifier, Picolibc conf, env vars). Flash/monitor on hardware still pending confirmation.
+
 ---
 
 ## Phase 1 — SD Card + Filesystem
