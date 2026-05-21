@@ -19,13 +19,13 @@ Status key: `[ ]` not started · `[~]` in progress · `[x]` done
 - [x] `west blobs fetch hal_espressif`
 - [x] Clone this repo to `C:\zephyrproject\applications\xiao_esp32s3_sense_zephyr`
 - [x] Build `samples/hello_world` for `xiao_esp32s3/esp32s3/procpu/sense` (with Picolibc module conf)
-- [ ] `west flash` + `west espressif monitor` — **pending hardware confirmation**
+- [x] `west flash` + `west espressif monitor` (COM16, 2026-05-21)
 
 **Pass:** `Hello World! xiao_esp32s3` on serial.
 
 **Notes:**
 
-Build succeeded (`zephyr.elf` at `C:\zephyrproject\zephyr\build\zephyr\zephyr.elf`). Flash not yet confirmed: first attempt failed (esptool path); monitor saw COM4/COM5 but no Hello World. Retry with board connected — see [docs/phase0-setup.md](phase0-setup.md) and [LESSONS_LEARNED.md](../LESSONS_LEARNED.md).
+Phase 0 **complete**. Serial output: `Hello World! xiao_esp32s3/esp32s3/procpu/sense` on COM16 @ 115200. Windows flash required `$env:PATHEXT = ".PY;" + $env:PATHEXT` so `esptool.py` is found. See [docs/phase0-setup.md](phase0-setup.md) and [LESSONS_LEARNED.md](../LESSONS_LEARNED.md).
 
 ---
 

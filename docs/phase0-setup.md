@@ -62,6 +62,13 @@ Output: `C:\zephyrproject\zephyr\build\zephyr\zephyr.elf`
 
 Use a **dedicated ESP32 shell** (not nRF Connect / NCS environment).
 
+On Windows, before `west flash`, set:
+
+```powershell
+$env:PATHEXT = ".PY;" + $env:PATHEXT
+$env:ZEPHYR_SDK_INSTALL_DIR = "C:\Users\Brian\zephyr-sdk-0.17.2"
+```
+
 ```powershell
 $env:ZEPHYR_SDK_INSTALL_DIR = "C:\Users\Brian\zephyr-sdk-0.17.2"
 cd C:\zephyrproject\zephyr

@@ -137,8 +137,17 @@ Build-only steps (`west build`, `west update`, doc edits) do not require this co
 |---|---|
 | **Issue** | `west flash` requires `esptool.py` from the Espressif HAL module. |
 | **Symptom** | `FATAL ERROR: required program .../esptool_py/esptool.py not found` |
-| **Fix** | Run `west blobs fetch hal_espressif` from `C:\zephyrproject`. If still missing, `pip install esptool`. |
-| **Notes** | File should exist at `modules/hal/espressif/tools/esptool_py/esptool.py` after blobs fetch. |
+| **Fix** | Run `west blobs fetch hal_espressif` from `C:\zephyrproject`. On Windows, also prepend `.PY` to `PATHEXT`: `$env:PATHEXT = ".PY;" + $env:PATHEXT` so Zephyr's `require()` finds `esptool.py`. If still missing, `pip install esptool`. |
+| **Notes** | File should exist at `modules/hal/espressif/tools/esptool_py/esptool.py` after blobs fetch. Successful flash used **COM16** on this machine. |
+
+### 10. Wrong COM port / busy port during flash or monitor
+
+| Field | Detail |
+|---|---|
+| **Issue** | Multiple COM ports present; board may not be on the port esptool tries first. |
+| **Symptom** | `Write timeout`, `port is busy`, or `No serial data received` on COM3/COM4/COM5. |
+| **Fix** | Identify the XIAO port in Device Manager. Use `west espressif monitor -p COM16` (adjust port). Close other serial monitors using the same port. |
+| **Notes** | After successful flash, monitor on the same port that esptool used. |
 
 ### Phase 0 working build recipe (reference)
 
