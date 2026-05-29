@@ -90,6 +90,8 @@ Deferred. Can revisit after Phase 5 if audio streaming is needed.
 
 **Goal:** Join AP and reach device from LAN.
 
+**Status:** On hold (2026-05-29) — no usable **2.4 GHz** AP at current location (ESP32-S3 cannot join 5 GHz–only networks).
+
 - [~] Build Wi-Fi app with XIAO overlay (`app/wifi_connect`)
 - [~] Configure SSID/password (`config/wifi-credentials.conf`)
 - [ ] Flash + verify DHCP IP on serial
@@ -107,6 +109,8 @@ See [phase4-wifi.md](phase4-wifi.md). Build: `.\scripts\build-wifi-connect.ps1 -
 
 **Goal:** Browse and download JPEG files from microSD over Wi-Fi (adapted from original MJPEG stream plan).
 
+**Status:** On hold — depends on Phase 4 (2.4 GHz Wi-Fi).
+
 - [~] HTTP server on port 80 (`app/sd_gallery`)
 - [~] `GET /` — HTML listing of `*.JPG` on `/SD:`
 - [~] `GET /img/NAME.JPG` — download file from SD
@@ -120,11 +124,30 @@ See [phase5-sd-gallery.md](phase5-sd-gallery.md). Build: `.\scripts\build-sd-gal
 
 Optional later: live MJPEG `/stream` endpoint.
 
-## Phase 6 — Scheduled OCR for Serial Numbers
+---
+
+## Phase 6a — External GPIO Trigger
+
+**Goal:** External signal triggers QXGA JPEG capture to SD (extends Phase 2 BOOT flow).
+
+- [ ] Choose trigger pin (default: **D1 / GPIO2**)
+- [ ] Devicetree overlay for external trigger input
+- [ ] GPIO interrupt + debounce in `cam_capture_sd` (or dedicated app)
+- [ ] Verify capture on each trigger edge
+
+**Pass:** Each valid external trigger produces a new `.JPG` on `/SD:` without bounce duplicates.
+
+**Notes:**
+
+See [phase6-gpio-trigger.md](phase6-gpio-trigger.md). Builds on `app/cam_capture_sd`. No Wi-Fi required.
+
+---
+
+## Phase 6 — OCR on Triggered Capture
 
 **Goal:** Triggered capture → serial string stored.
 
-- [ ] Choose trigger: time / HTTP POST / GPIO
+- [ ] Phase 6a trigger stable
 - [ ] ROI crop for text region
 - [ ] OCR Tier B: POST JPEG to backend service
 - [ ] Validate serial format (regex)
@@ -134,3 +157,5 @@ Optional later: live MJPEG `/stream` endpoint.
 **Pass:** Correct serial read from labeled test part ≥N times.
 
 **Notes:**
+
+Full design: [phase6-gpio-trigger.md](phase6-gpio-trigger.md). Trigger options were originally time / HTTP / GPIO — **GPIO first** (6a), OCR second (6).

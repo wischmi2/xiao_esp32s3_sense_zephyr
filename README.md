@@ -89,9 +89,10 @@ app/                    # Zephyr application (added per phase)
 | 1 | SD card / FAT filesystem |
 | 2 | OV3660 still capture |
 | 3 | PDM microphone *(skipped for now)* |
-| 4 | Wi-Fi connectivity |
-| 5 | Wireless SD gallery (browse/download JPEGs) |
-| 6 | Scheduled OCR for serial numbers |
+| 4 | Wi-Fi connectivity *(on hold — need 2.4 GHz AP)* |
+| 5 | Wireless SD gallery *(on hold — needs Phase 4)* |
+| 6a | External GPIO trigger → JPEG to SD |
+| 6 | OCR on triggered capture |
 
 Details: [docs/phases.md](docs/phases.md)
 
