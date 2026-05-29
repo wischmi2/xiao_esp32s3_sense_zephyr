@@ -1,6 +1,7 @@
 # Serial / monitor captures (keep logs/serial/README.md)
 logs/serial/*.txt
 logs/serial/*.err.txt
+logs/serial/*.txt.err
 monitor_*.txt
 
 # Local Zephyr build artifacts if ever built inside repo
