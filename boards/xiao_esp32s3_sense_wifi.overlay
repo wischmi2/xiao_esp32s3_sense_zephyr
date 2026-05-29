@@ -1,0 +1,7 @@
+/*
+ * XIAO ESP32S3 Sense — enable on-chip Wi-Fi (disabled in SoC dtsi by default)
+ */
+
+&wifi {
+	status = "okay";
+};

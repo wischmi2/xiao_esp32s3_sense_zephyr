@@ -88,9 +88,9 @@ app/                    # Zephyr application (added per phase)
 | 0 | Toolchain + hello world |
 | 1 | SD card / FAT filesystem |
 | 2 | OV3660 still capture |
-| 3 | PDM microphone |
-| 4 | Wi-Fi |
-| 5 | MJPEG streaming |
+| 3 | PDM microphone *(skipped for now)* |
+| 4 | Wi-Fi connectivity |
+| 5 | Wireless SD gallery (browse/download JPEGs) |
 | 6 | Scheduled OCR for serial numbers |
 
 Details: [docs/phases.md](docs/phases.md)

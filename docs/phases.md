@@ -72,6 +72,8 @@ Phase 0 **complete**. Serial output: `Hello World! xiao_esp32s3/esp32s3/procpu/s
 
 **Goal:** Live loudness over serial.
 
+**Status:** Skipped for now (2026-05-21) — proceed to Phase 4/5 for wireless SD access.
+
 - [ ] Add I2S PDM devicetree overlay (GPIO 41 DATA, GPIO 42 CLK)
 - [ ] 16 kHz, 16-bit, mono — do not change until stable
 - [ ] Print RMS or raw samples to serial plotter
@@ -80,36 +82,43 @@ Phase 0 **complete**. Serial output: `Hello World! xiao_esp32s3/esp32s3/procpu/s
 
 **Notes:**
 
+Deferred. Can revisit after Phase 5 if audio streaming is needed.
+
 ---
 
 ## Phase 4 — Wi-Fi Connectivity
 
 **Goal:** Join AP and reach device from LAN.
 
-- [ ] Build `samples/net/wifi` with XIAO overlay
-- [ ] Configure SSID/password
-- [ ] `wifi scan` + connect
+- [~] Build Wi-Fi app with XIAO overlay (`app/wifi_connect`)
+- [~] Configure SSID/password (`config/wifi-credentials.conf`)
+- [ ] Flash + verify DHCP IP on serial
 - [ ] Ping device IP from PC
 
 **Pass:** Stable connection with antenna installed.
 
 **Notes:**
 
+See [phase4-wifi.md](phase4-wifi.md). Build: `.\scripts\build-wifi-connect.ps1 -Flash`
+
 ---
 
-## Phase 5 — Camera Streaming over Wi-Fi
+## Phase 5 — Wireless SD Gallery
 
-**Goal:** MJPEG stream viewable in browser.
+**Goal:** Browse and download JPEG files from microSD over Wi-Fi (adapted from original MJPEG stream plan).
 
-- [ ] HTTP server on port 80
-- [ ] `GET /stream` multipart MJPEG from Phase 2 pipeline
-- [ ] Optional: `GET /` simple status page with IP
+- [~] HTTP server on port 80 (`app/sd_gallery`)
+- [~] `GET /` — HTML listing of `*.JPG` on `/SD:`
+- [~] `GET /img/NAME.JPG` — download file from SD
+- [ ] Flash + verify in browser on LAN
 
-**Pass:** Browser shows live stream on LAN (QVGA ~5–10 FPS acceptable).
+**Pass:** Browser lists and displays SD card photos. QXGA files download successfully.
 
 **Notes:**
 
----
+See [phase5-sd-gallery.md](phase5-sd-gallery.md). Build: `.\scripts\build-sd-gallery.ps1 -Flash`
+
+Optional later: live MJPEG `/stream` endpoint.
 
 ## Phase 6 — Scheduled OCR for Serial Numbers
 

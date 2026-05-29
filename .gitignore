@@ -4,5 +4,9 @@ logs/serial/*.err.txt
 logs/serial/*.txt.err
 monitor_*.txt
 
+# Local Wi-Fi credentials (copy from wifi-credentials.conf.example)
+config/wifi-credentials.conf
+
 # Local Zephyr build artifacts if ever built inside repo
 build/
+
