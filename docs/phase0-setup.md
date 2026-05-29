@@ -78,9 +78,10 @@ west espressif monitor
 
 If flash fails:
 
-1. Hold **BOOT**, tap **RESET**, release BOOT (bootloader mode), retry `west flash`
-2. Confirm `esptool.py` exists: `C:\zephyrproject\modules\hal\espressif\tools\esptool_py\esptool.py`
-3. Install esptool if missing: `pip install esptool`
+1. **COM port locked?** Run `.\scripts\kill-serial-monitor.ps1 -Port COM16` — see [com-port-troubleshooting.md](com-port-troubleshooting.md). Unplugging the board does **not** fix a leftover `idf_monitor` process on Windows.
+2. Hold **BOOT**, tap **RESET**, release BOOT (bootloader mode), retry `west flash`
+3. Confirm `esptool.py` exists: `C:\zephyrproject\modules\hal\espressif\tools\esptool_py\esptool.py`
+4. Install esptool if missing: `pip install esptool`
 
 **Pass criterion:** serial prints `Hello World! xiao_esp32s3`
 

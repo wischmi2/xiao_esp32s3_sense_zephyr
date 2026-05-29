@@ -1,0 +1,6 @@
+name: ov3660
+build:
+  kconfig: Kconfig
+  cmake: .
+  settings:
+    dts_root: .

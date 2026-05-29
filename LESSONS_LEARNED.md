@@ -18,6 +18,8 @@ Typical checklist to confirm with the user:
 
 Build-only steps (`west build`, `west update`, doc edits) do not require this confirmation.
 
+**After any automated `west espressif monitor`:** run `.\scripts\kill-serial-monitor.ps1` so COM16 is not left locked for the user. See [docs/com-port-troubleshooting.md](docs/com-port-troubleshooting.md).
+
 ---
 
 ## Planning / Environment (pre-Phase 0)
@@ -144,10 +146,10 @@ Build-only steps (`west build`, `west update`, doc edits) do not require this co
 
 | Field | Detail |
 |---|---|
-| **Issue** | Multiple COM ports present; board may not be on the port esptool tries first. |
-| **Symptom** | `Write timeout`, `port is busy`, or `No serial data received` on COM3/COM4/COM5. |
-| **Fix** | Identify the XIAO port in Device Manager. Use `west espressif monitor -p COM16` (adjust port). Close other serial monitors using the same port. |
-| **Notes** | After successful flash, monitor on the same port that esptool used. |
+| **Issue** | Multiple COM ports present; board may not be on the port esptool tries first; or port is permanently locked. |
+| **Symptom** | `Write timeout`, `port is busy`, `Access is denied`, or `No serial data received` on COM3/COM4/COM5/COM16. |
+| **Fix** | Identify the XIAO port in Device Manager. Close/kill other serial clients. See **[docs/com-port-troubleshooting.md](docs/com-port-troubleshooting.md)**. |
+| **Notes** | After successful flash, monitor on the same port esptool used. |
 
 ### Phase 0 working build recipe (reference)
 
@@ -164,31 +166,89 @@ west espressif monitor
 
 ## Phase 1 — SD Card + Filesystem
 
-**Status:** Not started.
+**Status:** Functionally complete (2026-05-21) — mount + read verified; strict log checklist hampered by dropped messages on full card.
 
-| Anticipated risk | Notes |
+### 1. SD storage init failure (legacy card / CMD8)
+
+| Field | Detail |
 |---|---|
-| SD card format / size | Use FAT32, ≤32 GB for broad compatibility. |
-| SPI pin mapping | Sense DTS wires SD via `spi2`; verify against hardware before custom overlays. |
-| Mount path conventions | Zephyr FAT sample uses `/SD:` — confirm in `samples/subsys/fs/fs_sample`. |
+| **Issue** | `fs_sample` builds and flashes, but SD card does not mount. |
+| **Symptom** | Serial: `Card does not support CMD8, assuming legacy card` → `Storage init ERROR!` → `fs mount error (-5)` → `Error mounting disk.` |
+| **Fix** | **Ensure microSD is fully seated** in the Sense expansion slot (gold contacts inward). Reseat if needed. Confirm FAT32, card ≤32 GB. |
+| **Notes** | Root cause on 2026-05-21: card was **not inserted** in the board slot. After seating, mount and listing worked. |
 
-**Notes:** _(none yet — add issues here as Phase 1 progresses)_
+### 2. Log messages dropped during large SD directory listing
+
+| Field | Detail |
+|---|---|
+| **Issue** | Card with many existing files causes long `lsdir()` output at boot. |
+| **Symptom** | `--- 26 messages dropped ---` in serial; `Block count`, `Disk mounted.`, `/SD:` header may not appear in capture. |
+| **Fix** | Use an empty (or nearly empty) card for clean Phase 1 logs, or monitor longer / increase log buffer. Functional test still passes if `[FILE]` lines appear. |
+| **Notes** | Observed listing IMAGE18–IMAGE37.JPG and VIDEO0.AVI from prior Arduino use. |
+
+### 3. COM port busy during flash
+
+| Field | Detail |
+|---|---|
+| **Issue** | `west flash` / monitor fail with `PermissionError: Access is denied` on COM16. |
+| **Symptom** | Port locked by another serial monitor (Cursor, Arduino IDE, stale `idf_monitor`, etc.). Port often **stays locked** until the holding process is killed or USB is replugged. |
+| **Fix** | Run **`.\scripts\kill-serial-monitor.ps1 -Port COM16`** — leftover `idf_monitor`/`python` from agent or automated `west espressif monitor` keeps the port open; **unplugging the XIAO does not release it**. Full guide: [docs/com-port-troubleshooting.md](docs/com-port-troubleshooting.md). |
+| **Notes** | Primary cause in this project: agent/automated monitor not exiting cleanly. Kill PC process first, then retry flash. |
+
+**Anticipated risks (unchanged):**
 
 ---
 
 ## Phase 2 — Camera Still Capture (OV3660)
 
-**Status:** Not started.
+**Status:** Complete (2026-05-29) — OV3660 driver, QVGA JPEG capture to `/SD:/ZEPHR000.JPG`.
 
-| Anticipated risk | Notes |
+### 1. OV3660 not visible on I2C without XMCLK
+
+| Field | Detail |
 |---|---|
-| **No upstream OV3660 driver** | Sense DTS binds OV2640; must port/adapt driver or extend OV2640. Budget 1–2 weeks. |
-| **I2C address uncertainty** | Scan bus — expect `0x3c` or document actual vs DTS `0x30`. |
-| **PSRAM misconfiguration** | Enable `CONFIG_ESP32S3_SPIRAM`; frame alloc failures if PSRAM Kconfig wrong. |
-| **GPIO 38 LED conflict** | Camera VSYNC shares user LED pin — disable LED in overlay when camera active. |
-| **Sensor tuning** | vflip, brightness, saturation differ from OV2640; borrow from Arduino reference repo. |
+| **Issue** | Initial I2C probe found no devices; SCCB read returned `-14` at 0x3c and 0x30. |
+| **Symptom** | Empty I2C bus scan with only `CONFIG_I2C=y`. |
+| **Fix** | Enable **`CONFIG_VIDEO_ESP32=y`** so `lcd_cam` starts **XMCLK (GPIO 10)** before SCCB probe. Wait ~100 ms after boot. |
+| **Notes** | After fix: `0x3c: PID 0x3660 (OV3660)`. App: `app/cam_i2c_probe`. |
 
-**Notes:** _(none yet — add issues here as Phase 2 progresses)_
+### 2. Upstream Sense DTS wrong sensor
+
+| Field | Detail |
+|---|---|
+| **Issue** | `xiao_esp32s3_procpu_sense.dts` binds **OV2640 @ 0x30**; hardware is **OV3660 @ 0x3c**. |
+| **Symptom** | OV2640 driver cannot probe sensor even with video stack enabled. |
+| **Fix** | Port **OV3660 driver** (16-bit SCCB, like OV5640) + overlay `@3c`. |
+| **Notes** | Out-of-tree module: `modules/ov3660/`. See [docs/phase2-ov3660.md](docs/phase2-ov3660.md). |
+
+### 3. DMA error if SD write while capture running
+
+| Field | Detail |
+|---|---|
+| **Issue** | Writing BMP to SD while `lcd_cam` still streaming exhausts video buffers. |
+| **Symptom** | `Frame dropped. No buffer available`, `DMA error: -160` during/after capture. |
+| **Fix** | Call **`video_stream_stop()`** immediately after `video_dequeue()`, before `fs_write()`. |
+| **Notes** | App: `app/cam_capture_sd`. Fixed 2026-05-29. |
+
+### 4. Deferred logging hid early boot output
+
+| Field | Detail |
+|---|---|
+| **Issue** | `CONFIG_LOG_MODE_DEFERRED` — monitor showed only ESP-ROM/PSRAM lines for ~35 s. |
+| **Symptom** | Appears hung after `SPI SRAM memory test OK`; no Zephyr banner. |
+| **Fix** | Use **`CONFIG_LOG_MODE_IMMEDIATE=y`** for bring-up apps, or wait for log thread. |
+| **Notes** | `config/cam-capture-sd-sense.conf`. |
+
+### 5. `invert-byte-order` breaks JPEG capture
+
+| Field | Detail |
+|---|---|
+| **Issue** | `invert-byte-order` on `lcd_cam` was added to fix RGB565 BMP color byte order. |
+| **Symptom** | `JPEG SOI/EOI not found in 76800 byte buffer` — sensor outputs JPEG but DMA swaps byte pairs. |
+| **Fix** | Remove `invert-byte-order` from overlay when using JPEG; JPEG colors are correct without it. |
+| **Notes** | Log: `logs/serial/cam_jpeg_capture.txt`. Typical QVGA JPEG ~4–8 KB inside 76800-byte DMA buffer. |
+
+**Remaining (optional):** Higher resolutions, RGB565 color path without psychedelic artifacts if BMP is needed again.
 
 ---
 

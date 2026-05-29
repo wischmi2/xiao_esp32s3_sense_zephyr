@@ -1,0 +1,48 @@
+/*
+ * XIAO ESP32S3 Sense — replace upstream OV2640@0x30 with OV3660@0x3c
+ */
+
+/ {
+	chosen {
+		zephyr,camera = &lcd_cam;
+	};
+
+	aliases {
+		sw0 = &boot_button;
+	};
+
+	buttons {
+		compatible = "gpio-keys";
+		boot_button: boot_button {
+			gpios = <&gpio0 0 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+			label = "BOOT";
+		};
+	};
+};
+
+&i2c1 {
+	/delete-node/ ov2640@30;
+
+	ov3660: ov3660@3c {
+		compatible = "ovti,ov3660";
+		reg = <0x3c>;
+		status = "okay";
+
+		port {
+			ov3660_ep_out: endpoint {
+				remote-endpoint-label = "dvp_ep_in";
+			};
+		};
+	};
+};
+
+&lcd_cam {
+	source = <&ov3660>;
+	/* Do not use invert-byte-order for JPEG (breaks FF D8 / FF D9 markers). */
+
+	port {
+		dvp_ep_in: endpoint {
+			remote-endpoint-label = "ov3660_ep_out";
+		};
+	};
+};

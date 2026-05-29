@@ -6,12 +6,13 @@ Zephyr RTOS application for the [Seeed Studio XIAO ESP32S3 Sense](https://wiki.s
 **Long-term goal:** Scheduled capture and OCR for part serial numbers.
 
 Design plan: [ZEPHYR_PLAN.md](ZEPHYR_PLAN.md)  
-Setup gotchas and resolved issues: [LESSONS_LEARNED.md](LESSONS_LEARNED.md)
+Setup gotchas and resolved issues: [LESSONS_LEARNED.md](LESSONS_LEARNED.md)  
+**COM port locked?** [docs/com-port-troubleshooting.md](docs/com-port-troubleshooting.md)
 
 ## Hardware
 
 - Board: Seeed XIAO ESP32S3 **Sense** (OV3660, PDM mic, microSD slot)
-- Build target: `xiao_esp32s3/xiao_esp32s3_procpu/sense`
+- Build target: `xiao_esp32s3/esp32s3/procpu/sense`
 - PSRAM required for camera workloads
 
 ## West Workspace Setup
@@ -26,7 +27,7 @@ Yes — NCS is a West workspace, but it targets **Nordic ARM** chips. The XIAO E
 # Create workspace (separate from C:\ncs\)
 mkdir C:\zephyrproject\applications -Force
 cd C:\zephyrproject
-west init -m https://github.com/zephyrproject-rtos/zephyr --mr main
+west init -m https://github.com/zephyrproject-rtos/zephyr --mr v4.1.0
 west update
 west blobs fetch hal_espressif
 
@@ -35,18 +36,25 @@ cd applications
 git clone https://github.com/wischmi2/xiao_esp32s3_sense_zephyr.git
 ```
 
-You also need the [Zephyr SDK](https://github.com/zephyrproject-rtos/sdk-ng/releases) with **xtensa-espressif_esp32s3** support. The ARM toolchains under `C:\ncs\` cannot compile ESP32-S3 firmware. Follow the [Windows getting started guide](https://docs.zephyrproject.org/latest/develop/getting_started/installation_win.html) for SDK install and `ZEPHYR_SDK_INSTALL_DIR`.
+You also need the [Zephyr SDK](https://github.com/zephyrproject-rtos/sdk-ng/releases) **0.17.x** with **xtensa-espressif_esp32s3** support. The ARM toolchains under `C:\ncs\` cannot compile ESP32-S3 firmware. Set `ZEPHYR_SDK_INSTALL_DIR` (e.g. `C:\Users\Brian\zephyr-sdk-0.17.2`).
+
+**Do not use `--mr main`** — Zephyr 4.4+ requires SDK 1.0. Pin **v4.1.0** for SDK 0.17.2 compatibility.
+
+Full Phase 0 steps: [docs/phase0-setup.md](docs/phase0-setup.md)
 
 ### Phase 0 smoke test (upstream sample)
 
 Before building this app, confirm the ESP32 workspace and board:
 
 ```powershell
+# From repo root
+.\scripts\build-hello.ps1 -Pristine
 cd C:\zephyrproject\zephyr
-west build -p always -b xiao_esp32s3/xiao_esp32s3_procpu/sense samples/hello_world
 west flash
 west espressif monitor
 ```
+
+Build requires Picolibc module workaround — see [docs/phase0-setup.md](docs/phase0-setup.md).
 
 Expected: `Hello World! xiao_esp32s3`
 
@@ -62,9 +70,14 @@ Expected: `Hello World! xiao_esp32s3`
 ZEPHYR_PLAN.md          # Architecture and phased plan
 LESSONS_LEARNED.md      # Phase-organized setup issues and fixes
 docs/
+  phase0-setup.md       # Windows workspace + build + flash steps
   hardware.md           # Physical setup (OCR lighting, mounting)
   phases.md             # Phase checklists and progress tracking
   arduino-mapping.md    # Arduino reference → Zephyr equivalents
+scripts/
+  build-hello.ps1       # Phase 0 hello_world build helper
+config/
+  picolibc-module.conf  # Reference copy of Picolibc workaround Kconfig
 app/                    # Zephyr application (added per phase)
 ```
 

@@ -50,7 +50,9 @@ C:\zephyrproject\
             └── arduino-mapping.md
 ```
 
-**Board target:** `xiao_esp32s3/xiao_esp32s3_procpu/sense` (Sense variant, merged Zephyr v4.0.0)
+**Board target:** `xiao_esp32s3/esp32s3/procpu/sense` (Sense variant; merged Zephyr v4.0.0, verified on **v4.1.0**)
+
+**Zephyr version pin:** Use **v4.1.0** with **Zephyr SDK 0.17.2** — not `main` (requires SDK 1.0).
 
 **Reference repos (mine, do not fork wholesale):**
 
@@ -70,7 +72,7 @@ C:\zephyrproject\
 | Flash | 8 MB |
 | PSRAM | 8 MB (required for camera buffers) |
 | USB | USB-C serial/JTAG |
-| Build target | `-b xiao_esp32s3/xiao_esp32s3_procpu/sense` |
+| Build target | `-b xiao_esp32s3/esp32s3/procpu/sense` |
 
 ### Camera (OV3660) — DVP + I2C SCCB
 

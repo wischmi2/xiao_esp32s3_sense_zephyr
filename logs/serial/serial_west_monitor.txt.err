@@ -1,0 +1,6 @@
+[0;33m--- WARNING: GDB cannot open serial ports accessed as COMx[0m
+[0;33m--- Using \\.\COM16 instead...[0m
+[0;33m--- idf_monitor on \\.\COM16 115200 ---[0m
+--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---
+ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+Waiting for the device to reconnect...........................................

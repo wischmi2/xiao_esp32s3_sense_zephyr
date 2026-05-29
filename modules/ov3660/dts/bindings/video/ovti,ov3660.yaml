@@ -1,0 +1,17 @@
+# Copyright (c) 2026 Brian Wischmeyer
+# SPDX-License-Identifier: Apache-2.0
+
+description: OV3660 CMOS video sensor (16-bit SCCB)
+
+compatible: "ovti,ov3660"
+
+include: i2c-device.yaml
+
+properties:
+  reset-gpios:
+    type: phandle-array
+    description: Active-low hardware reset (optional on Sense board).
+
+child-binding:
+  child-binding:
+    include: video-interfaces.yaml
