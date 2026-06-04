@@ -1,8 +1,8 @@
 # Capture west espressif monitor output to logs/serial/
-# Usage: .\scripts\capture-serial.ps1 [-Port COM16] [-OutFile name.txt] [-Seconds 45]
+# Usage: .\scripts\capture-serial.ps1 [-Port COM13] [-OutFile name.txt] [-Seconds 45]
 
 param(
-    [string]$Port = "COM16",
+    [string]$Port = "COM13",
     [string]$OutFile = "",
     [int]$Seconds = 45
 )
@@ -11,7 +11,7 @@ $ErrorActionPreference = "Stop"
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $LogDir = Join-Path $RepoRoot "logs\serial"
-$West = "C:\ncs\toolchains\66cdf9b75e\opt\bin\Scripts\west.exe"
+$West = "C:\ncs\toolchains\0b393f9e1b\opt\bin\Scripts\west.exe"
 
 if (-not (Test-Path $LogDir)) {
     New-Item -ItemType Directory -Path $LogDir -Force | Out-Null

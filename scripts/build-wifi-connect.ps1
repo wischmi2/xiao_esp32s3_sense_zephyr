@@ -7,13 +7,13 @@
 param(
     [switch]$Flash,
     [switch]$Pristine,
-    [string]$Port = "COM16"
+    [string]$Port = "COM13"
 )
 
 $ErrorActionPreference = "Stop"
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
-$West = "C:\ncs\toolchains\66cdf9b75e\opt\bin\Scripts\west.exe"
+$West = "C:\ncs\toolchains\0b393f9e1b\opt\bin\Scripts\west.exe"
 $ZephyrDir = "C:\zephyrproject\zephyr"
 $AppDir = Join-Path $RepoRoot "app\wifi_connect"
 $Board = "xiao_esp32s3/esp32s3/procpu/sense"
@@ -21,7 +21,7 @@ $WifiConf = (Join-Path $RepoRoot "config\wifi-sense.conf") -replace '\\', '/'
 $CredConf = Join-Path $RepoRoot "config\wifi-credentials.conf"
 $Overlay = (Join-Path $RepoRoot "boards\xiao_esp32s3_sense_wifi.overlay") -replace '\\', '/'
 
-$env:ZEPHYR_SDK_INSTALL_DIR = "C:\Users\Brian\zephyr-sdk-0.17.2"
+$env:ZEPHYR_SDK_INSTALL_DIR = "C:\Users\Brian\zephyr-sdk-0.17.4"
 $env:PATHEXT = ".PY;" + $env:PATHEXT
 
 if (-not (Test-Path $CredConf)) {

@@ -8,12 +8,12 @@ param(
 $ErrorActionPreference = "Stop"
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
-$West = "C:\ncs\toolchains\66cdf9b75e\opt\bin\Scripts\west.exe"
+$West = "C:\ncs\toolchains\0b393f9e1b\opt\bin\Scripts\west.exe"
 $ZephyrDir = "C:\zephyrproject\zephyr"
 $Board = "xiao_esp32s3/esp32s3/procpu/sense"
 $ExtraConf = ($RepoRoot -replace '\\', '/') + "/config/fs_sample-sense.conf"
 
-$env:ZEPHYR_SDK_INSTALL_DIR = "C:\Users\Brian\zephyr-sdk-0.17.2"
+$env:ZEPHYR_SDK_INSTALL_DIR = "C:\Users\Brian\zephyr-sdk-0.17.4"
 
 Set-Location $ZephyrDir
 

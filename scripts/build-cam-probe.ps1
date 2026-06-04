@@ -3,18 +3,18 @@
 
 param(
     [switch]$Flash,
-    [string]$Port = "COM16"
+    [string]$Port = "COM13"
 )
 
 $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent $PSScriptRoot
-$West = "C:\ncs\toolchains\66cdf9b75e\opt\bin\Scripts\west.exe"
+$West = "C:\ncs\toolchains\0b393f9e1b\opt\bin\Scripts\west.exe"
 $ZephyrDir = "C:\zephyrproject\zephyr"
 $AppDir = Join-Path $RepoRoot "app\cam_i2c_probe"
 $Board = "xiao_esp32s3/esp32s3/procpu/sense"
 $ExtraConf = (Join-Path $RepoRoot "config\picolibc-module.conf") -replace '\\', '/'
 
-$env:ZEPHYR_SDK_INSTALL_DIR = "C:\Users\Brian\zephyr-sdk-0.17.2"
+$env:ZEPHYR_SDK_INSTALL_DIR = "C:\Users\Brian\zephyr-sdk-0.17.4"
 $env:PATHEXT = ".PY;" + $env:PATHEXT
 
 Set-Location $ZephyrDir

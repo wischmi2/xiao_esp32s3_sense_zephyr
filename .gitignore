@@ -7,6 +7,9 @@ monitor_*.txt
 # Local Wi-Fi credentials (copy from wifi-credentials.conf.example)
 config/wifi-credentials.conf
 
+# Local IDE settings (machine-specific paths)
+.vscode/
+
 # Local Zephyr build artifacts if ever built inside repo
 build/
 

@@ -4,20 +4,20 @@
 param(
     [switch]$Flash,
     [switch]$Pristine,
-    [string]$Port = "COM16"
+    [string]$Port = "COM13"
 )
 
 $ErrorActionPreference = "Stop"
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
-$West = "C:\ncs\toolchains\66cdf9b75e\opt\bin\Scripts\west.exe"
+$West = "C:\ncs\toolchains\0b393f9e1b\opt\bin\Scripts\west.exe"
 $ZephyrDir = "C:\zephyrproject\zephyr"
 $Board = "xiao_esp32s3/esp32s3/procpu/sense"
 $ExtraConf = (Join-Path $RepoRoot "config\video-capture-sense.conf") -replace '\\', '/'
 $Overlay = (Join-Path $RepoRoot "boards\xiao_esp32s3_sense_ov3660.overlay") -replace '\\', '/'
 $Module = (Join-Path $RepoRoot "modules\ov3660") -replace '\\', '/'
 
-$env:ZEPHYR_SDK_INSTALL_DIR = "C:\Users\Brian\zephyr-sdk-0.17.2"
+$env:ZEPHYR_SDK_INSTALL_DIR = "C:\Users\Brian\zephyr-sdk-0.17.4"
 $env:PATHEXT = ".PY;" + $env:PATHEXT
 
 Set-Location $ZephyrDir
