@@ -90,12 +90,12 @@ Deferred. Can revisit after Phase 5 if audio streaming is needed.
 
 **Goal:** Join AP and reach device from LAN.
 
-**Status:** On hold (2026-05-29) — no usable **2.4 GHz** AP at current location (ESP32-S3 cannot join 5 GHz–only networks).
+**Status:** Complete (2026-06-04) — verified on BrysonNet @ 192.168.4.30, COM13.
 
-- [~] Build Wi-Fi app with XIAO overlay (`app/wifi_connect`)
-- [~] Configure SSID/password (`config/wifi-credentials.conf`)
-- [ ] Flash + verify DHCP IP on serial
-- [ ] Ping device IP from PC
+- [x] Build Wi-Fi app with XIAO overlay (`app/wifi_connect`)
+- [x] Configure SSID/password (`config/wifi-credentials.conf`)
+- [x] Flash + verify DHCP IP on serial
+- [x] Ping device IP from PC
 
 **Pass:** Stable connection with antenna installed.
 
@@ -109,12 +109,12 @@ See [phase4-wifi.md](phase4-wifi.md). Build: `.\scripts\build-wifi-connect.ps1 -
 
 **Goal:** Browse and download JPEG files from microSD over Wi-Fi (adapted from original MJPEG stream plan).
 
-**Status:** On hold — depends on Phase 4 (2.4 GHz Wi-Fi).
+**Status:** Complete (2026-06-04) — gallery at `http://192.168.4.30/`, SD mounted, JPEG list + download verified.
 
-- [~] HTTP server on port 80 (`app/sd_gallery`)
-- [~] `GET /` — HTML listing of `*.JPG` on `/SD:`
-- [~] `GET /img/NAME.JPG` — download file from SD
-- [ ] Flash + verify in browser on LAN
+- [x] HTTP server on port 80 (`app/sd_gallery`)
+- [x] `GET /` — HTML listing of `*.JPG` on `/SD:`
+- [x] `GET /img/NAME.JPG` — download file from SD
+- [x] Flash + verify in browser on LAN
 
 **Pass:** Browser lists and displays SD card photos. QXGA files download successfully.
 

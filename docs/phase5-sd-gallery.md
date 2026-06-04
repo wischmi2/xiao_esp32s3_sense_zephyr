@@ -17,9 +17,9 @@ Live streaming can be added later as an optional `/stream` endpoint.
 ```powershell
 $env:ZEPHYR_SDK_INSTALL_DIR = "C:\Users\Brian\zephyr-sdk-0.17.2"
 $env:PATHEXT = ".PY;" + $env:PATHEXT
-.\scripts\kill-serial-monitor.ps1 -Port COM16
-.\scripts\build-sd-gallery.ps1 -Flash -Port COM16
-west espressif monitor -p COM16
+.\scripts\kill-serial-monitor.ps1 -Port COM13
+.\scripts\build-sd-gallery.ps1 -Flash -Port COM13
+west espressif monitor -p COM13
 ```
 
 ## Usage

@@ -26,7 +26,7 @@ $env:ZEPHYR_SDK_INSTALL_DIR = "C:\Users\Brian\zephyr-sdk-0.17.4"
 $env:PATHEXT = ".PY;" + $env:PATHEXT
 
 if (-not (Test-Path $CredConf)) {
-    Write-Error "Missing $CredConf — copy config/wifi-credentials.conf.example and set SSID/password."
+    Write-Error "Missing $CredConf - copy config/wifi-credentials.conf.example and set SSID/password."
 }
 
 $CredConfUnix = $CredConf -replace '\\', '/'
@@ -52,7 +52,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 Write-Host ""
 Write-Host "Build OK: $ZephyrDir\build\zephyr\zephyr.elf"
 Write-Host "Flash:   .\scripts\build-sd-gallery.ps1 -Flash -Port $Port"
-Write-Host "Expect:  >>> SD gallery at http://<ip>/ <<< on serial"
+Write-Host 'Expect:  >>> SD gallery at http://<ip>/ <<< on serial'
 
 if ($Flash) {
     & (Join-Path $RepoRoot "scripts\kill-serial-monitor.ps1") -Port $Port

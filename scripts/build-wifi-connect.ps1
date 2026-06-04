@@ -54,7 +54,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 Write-Host ""
 Write-Host "Build OK: $ZephyrDir\build\zephyr\zephyr.elf"
 Write-Host "Flash:   .\scripts\build-wifi-connect.ps1 -Flash -Port $Port"
-Write-Host "Expect:  >>> Wi-Fi ready — ping <ip> <<< on serial"
+Write-Host 'Expect:  >>> Wi-Fi ready - ping <ip> <<< on serial'
 
 if ($Flash) {
     & (Join-Path $RepoRoot "scripts\kill-serial-monitor.ps1") -Port $Port
