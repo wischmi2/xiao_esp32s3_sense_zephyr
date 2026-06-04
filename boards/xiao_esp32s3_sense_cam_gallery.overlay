@@ -1,0 +1,12 @@
+/*
+ * Defer camera init until after Wi-Fi (saves internal RAM at boot for ESP32 Wi-Fi stack).
+ * Include after ov3660 + wifi overlays.
+ */
+
+&lcd_cam {
+	zephyr,deferred-init;
+};
+
+&ov3660 {
+	zephyr,deferred-init;
+};

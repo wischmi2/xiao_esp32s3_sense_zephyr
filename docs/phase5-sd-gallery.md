@@ -54,7 +54,14 @@ Gallery mode does **not** load the full JPEG into RAM — it reads from SD in 4 
 | `app/sd_gallery/` | Wi-Fi + SD mount + HTTP server |
 | `config/sd-gallery-sense.conf` | SD + larger network buffers |
 
+## Combined capture + gallery (recommended)
+
+Use **`app/cam_gallery`** — one firmware for BOOT capture and HTTP browse. See [cam-gallery.md](cam-gallery.md).
+
+```powershell
+.\scripts\build-cam-gallery.ps1 -Flash -Port COM13
+```
+
 ## Optional later
 
 - `GET /stream` — live QVGA MJPEG (original Phase 5 plan)
-- Combined firmware: capture on BOOT + serve gallery without reflashing

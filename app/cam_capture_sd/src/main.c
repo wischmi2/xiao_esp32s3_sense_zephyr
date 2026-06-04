@@ -14,6 +14,8 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/storage/disk_access.h>
 
+#include "ov3660.h"
+
 #if defined(CONFIG_FAT_FILESYSTEM_ELM)
 #include <ff.h>
 #endif
@@ -232,9 +234,12 @@ static int camera_configure(const struct device *video_dev)
 	}
 
 	video_set_ctrl(video_dev, VIDEO_CID_VFLIP, (void *)1);
-	video_set_ctrl(video_dev, VIDEO_CID_BRIGHTNESS, (void *)1);
-	video_set_ctrl(video_dev, VIDEO_CID_SATURATION, (void *)0);
-	video_set_ctrl(video_dev, VIDEO_CID_JPEG_COMPRESSION_QUALITY, (void *)12);
+	video_set_ctrl(video_dev, VIDEO_CID_BRIGHTNESS, (void *)0);
+	video_set_ctrl(video_dev, VIDEO_CID_SATURATION, (void *)-3);
+	video_set_ctrl(video_dev, VIDEO_CID_CONTRAST, (void *)1);
+	video_set_ctrl(video_dev, OV3660_CID_AE_LEVEL, (void *)-3);
+	video_set_ctrl(video_dev, OV3660_CID_SHARPNESS, (void *)2);
+	video_set_ctrl(video_dev, VIDEO_CID_JPEG_COMPRESSION_QUALITY, (void *)10);
 
 	LOG_INF("Camera: %ux%u JPEG", CAM_WIDTH, CAM_HEIGHT);
 	return 0;

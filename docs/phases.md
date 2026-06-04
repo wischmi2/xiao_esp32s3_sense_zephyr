@@ -109,18 +109,21 @@ See [phase4-wifi.md](phase4-wifi.md). Build: `.\scripts\build-wifi-connect.ps1 -
 
 **Goal:** Browse and download JPEG files from microSD over Wi-Fi (adapted from original MJPEG stream plan).
 
-**Status:** Complete (2026-06-04) — gallery at `http://192.168.4.30/`, SD mounted, JPEG list + download verified.
+**Status:** Complete (2026-06-04) — gallery verified; **combined with Phase 2** in `app/cam_gallery` (2026-06-04).
 
-- [x] HTTP server on port 80 (`app/sd_gallery`)
+- [x] HTTP server on port 80 (`app/sd_gallery` or `app/cam_gallery`)
 - [x] `GET /` — HTML listing of `*.JPG` on `/SD:`
 - [x] `GET /img/NAME.JPG` — download file from SD
 - [x] Flash + verify in browser on LAN
+- [x] **Combined firmware:** BOOT capture + gallery (`app/cam_gallery`) — Wi-Fi + HTTP + VGA capture one image
 
 **Pass:** Browser lists and displays SD card photos. QXGA files download successfully.
 
 **Notes:**
 
-See [phase5-sd-gallery.md](phase5-sd-gallery.md). Build: `.\scripts\build-sd-gallery.ps1 -Flash`
+- Gallery-only: [phase5-sd-gallery.md](phase5-sd-gallery.md) — `.\scripts\build-sd-gallery.ps1 -Flash`
+- **Capture + gallery (recommended):** [cam-gallery.md](cam-gallery.md) — `.\scripts\build-cam-gallery.ps1 -Flash`
+- Combined build needs `CONFIG_HEAP_MEM_POOL_SIZE=114688` and reduced DMA descriptors (see `config/cam-gallery-sense.conf`).
 
 Optional later: live MJPEG `/stream` endpoint.
 

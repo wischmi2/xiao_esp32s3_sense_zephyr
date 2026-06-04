@@ -18,6 +18,7 @@
 #include <zephyr/sys/byteorder.h>
 
 #include "ov3660_init_regs.h"
+#include "ov3660.h"
 
 LOG_MODULE_REGISTER(video_ov3660, CONFIG_VIDEO_LOG_LEVEL);
 
@@ -495,6 +496,94 @@ static int ov3660_set_saturation_level(const struct i2c_dt_spec *spec, int level
 	return 0;
 }
 
+static int ov3660_set_contrast_level(const struct i2c_dt_spec *spec, int level)
+{
+	if (level > 3 || level < -3) {
+		return -EINVAL;
+	}
+
+	return ov3660_write_reg(spec, 0x5586, (uint8_t)((level + 4) << 3));
+}
+
+/* esp32-camera ov3660.c — AE target for auto-exposure */
+static int ov3660_set_ae_level(const struct i2c_dt_spec *spec, int level)
+{
+	int ret;
+	int target_level;
+	int level_high, level_low;
+	int fast_high, fast_low;
+
+	if (level < -5 || level > 5) {
+		return -EINVAL;
+	}
+
+	target_level = ((level + 5) * 10) + 5;
+	level_low = target_level * 23 / 25;
+	level_high = target_level * 27 / 25;
+	fast_low = level_low >> 1;
+	fast_high = level_high << 1;
+
+	if (fast_high > 255) {
+		fast_high = 255;
+	}
+
+	ret = ov3660_write_reg(spec, 0x3a0f, (uint8_t)level_high);
+	if (ret) {
+		return ret;
+	}
+	ret = ov3660_write_reg(spec, 0x3a10, (uint8_t)level_low);
+	if (ret) {
+		return ret;
+	}
+	ret = ov3660_write_reg(spec, 0x3a1b, (uint8_t)level_high);
+	if (ret) {
+		return ret;
+	}
+	ret = ov3660_write_reg(spec, 0x3a1e, (uint8_t)level_low);
+	if (ret) {
+		return ret;
+	}
+	ret = ov3660_write_reg(spec, 0x3a11, (uint8_t)fast_high);
+	if (ret) {
+		return ret;
+	}
+
+	return ov3660_write_reg(spec, 0x3a1f, (uint8_t)fast_low);
+}
+
+static int ov3660_set_sharpness_level(const struct i2c_dt_spec *spec, int level)
+{
+	uint8_t mt_offset_2;
+	uint8_t mt_offset_1;
+	int ret;
+
+	if (level > 3 || level < -3) {
+		return -EINVAL;
+	}
+
+	mt_offset_2 = (uint8_t)((level + 3) * 8);
+	mt_offset_1 = mt_offset_2 + 1;
+
+	ret = ov3660_set_reg_bits(spec, 0x5308, 0x40, false);
+	if (ret) {
+		return ret;
+	}
+	ret = ov3660_write_reg(spec, 0x5300, 0x10);
+	if (ret) {
+		return ret;
+	}
+	ret = ov3660_write_reg(spec, 0x5301, 0x10);
+	if (ret) {
+		return ret;
+	}
+	ret = ov3660_write_reg(spec, 0x5302, mt_offset_1);
+	if (ret) {
+		return ret;
+	}
+
+	return ov3660_write_reg(spec, 0x5303, mt_offset_2);
+}
+
 static int ov3660_set_ctrl(const struct device *dev, uint32_t cid, void *value)
 {
 	const struct ov3660_config *cfg = dev->config;
@@ -512,6 +601,12 @@ static int ov3660_set_ctrl(const struct device *dev, uint32_t cid, void *value)
 		return ov3660_set_brightness_level(&cfg->i2c, val);
 	case VIDEO_CID_SATURATION:
 		return ov3660_set_saturation_level(&cfg->i2c, val);
+	case VIDEO_CID_CONTRAST:
+		return ov3660_set_contrast_level(&cfg->i2c, val);
+	case OV3660_CID_AE_LEVEL:
+		return ov3660_set_ae_level(&cfg->i2c, val);
+	case OV3660_CID_SHARPNESS:
+		return ov3660_set_sharpness_level(&cfg->i2c, val);
 	case VIDEO_CID_JPEG_COMPRESSION_QUALITY:
 		if (val < 0 || val > 63) {
 			return -EINVAL;

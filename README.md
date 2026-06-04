@@ -91,6 +91,7 @@ app/                    # Zephyr application (added per phase)
 | 3 | PDM microphone *(skipped for now)* |
 | 4 | Wi-Fi connectivity |
 | 5 | Wireless SD gallery |
+| 2+5 | **Camera + gallery** (`cam_gallery`) — one build for capture and browse |
 | 6a | External GPIO trigger → JPEG to SD |
 | 6 | OCR on triggered capture |
 
